@@ -8,3 +8,11 @@ export default function Auth() {
 export function links() {
   return [{ rel: "stylesheet", href: authStyles }];
 }
+
+export async function action({ request }) {
+  const serachParams = new URL(request.url).serachParams;
+  const authMode = serachParams.get("mode") || "login";
+
+  const formData = await request.formData();
+  const credentials = Object.fromEntries(formData);
+}
