@@ -1,13 +1,16 @@
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
 } from "@remix-run/react";
 
 import sharedStyles from "~/styles/shared.css";
+import Error from "./components/util/Error";
 
 export const meta = () => ({
   charset: "utf-8",
@@ -15,15 +18,16 @@ export const meta = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-export default function App() {
+function Document({ title, children }) {
   return (
     <html lang="en">
       <head>
+        <title>{title}</title>
         <Meta />
         <Links />
       </head>
       <body>
-        <Outlet />
+        {children}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -32,6 +36,49 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <Document>
+      <Outlet />
+    </Document>
+  );
+}
+
 export function links() {
   return [{ rel: "stylesheet", href: sharedStyles }];
+}
+
+export function CatchBoundary() {
+  const causeResponse = useCatch();
+
+  return (
+    <Document title={causeResponse.statusText}>
+      <main>
+        <Error title={causeResponse.statusText}>
+          <p>
+            {causeResponse.data?.message ||
+              "Something went wrong. Please try again"}
+          </p>
+          <p>
+            Back to <Link to="/">safety</Link>.
+          </p>
+        </Error>
+      </main>
+    </Document>
+  );
+}
+
+export function ErrorBoundary({ error }) {
+  return (
+    <Document title="An Error occurred">
+      <main>
+        <Error title="Error!">
+          <p>{error.message || "Something went wrong. Please try again"}</p>
+          <p>
+            Back to <Link to="/">safety</Link>.
+          </p>
+        </Error>
+      </main>
+    </Document>
+  );
 }

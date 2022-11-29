@@ -1,12 +1,5 @@
-const DUMMY_EXPENSES = [
-  {
-    id: "e1",
-    title: "First Expense",
-    amount: 50,
-    date: new Date().toISOString(),
-  },
-];
+import { getExpenses } from "~/data/expenses.server";
 
-export function loader() {
-  return DUMMY_EXPENSES;
+export async function loader() {
+  return await getExpenses();
 }

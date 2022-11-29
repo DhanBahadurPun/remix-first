@@ -21,6 +21,10 @@ function ExpenseForm() {
 
   const expenseData = expenses.find((expense) => expense.id === params.Id);
 
+  if (params.Id && !expenseData) {
+    return <p>Invalid Id.</p>;
+  }
+
   const isSubmitting = navigation.state !== "idle";
 
   const today = new Date().toISOString().slice(0, 10); // yields something like 2023-09-10
